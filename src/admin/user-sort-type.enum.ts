@@ -1,0 +1,6 @@
+export enum UserSortType {
+  USERNAME_ASC = 'USERNAME_ASC',
+  USERNAME_DESC = 'USERNAME_DESC',
+  ROLE_ASC = 'ROLE_ASC',
+  ROLE_DESC = 'ROLE_DESC',
+}
