@@ -5,22 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './admin/admin.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { dataSourceOption } from 'db/data-source';
 
 @Module({
   imports: [
     AuthModule,
     TaskModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '13771377',
-      database: 'task-management',
-      // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
+    TypeOrmModule.forRoot({ ...dataSourceOption, autoLoadEntities: true }),
     AdminModule,
   ],
   controllers: [AppController],
