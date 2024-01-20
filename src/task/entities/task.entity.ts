@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { TaskPriority } from '../task-priority.enum';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()
@@ -16,7 +16,7 @@ export class Task {
   id: string;
 
   @Column()
-  name: string;
+  title: string;
 
   @Column()
   priority: TaskPriority;
