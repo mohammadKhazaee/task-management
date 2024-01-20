@@ -16,7 +16,7 @@ export class Task {
   id: string;
 
   @Column()
-  name: string;
+  title: string;
 
   @Column()
   priority: TaskPriority;
