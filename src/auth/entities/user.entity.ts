@@ -1,12 +1,14 @@
-import { Task } from '../../task/entities/task.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
   CreateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
-import { UserRole } from '../user-role.enum';
+import { Task } from '../../task/entities/task.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class User {
@@ -19,8 +21,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
-  role: UserRole;
+  // @Column()
+  // role: UserRole;
 
   @Column({ default: null })
   imageUrl: string;
@@ -29,6 +31,12 @@ export class User {
   createdDate: Date;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @OneToMany((_type) => Task, (task) => task.user, { eager: true })
+  @ManyToMany(() => Role, (role) => role.user, {
+    cascade: true,
+  })
+  @JoinTable()
+  roles: Role[];
+
+  @OneToMany(() => Task, (task) => task.user, { eager: true })
   tasks: Task[];
 }

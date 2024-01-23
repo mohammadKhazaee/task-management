@@ -9,7 +9,7 @@ export const dataSourceOption: DataSourceOptions = {
   database: 'task-management',
   entities: ['./**/*.entity{.ts,.js}'],
   synchronize: false,
-  migrations: [`migrations/*{.ts,.js}`],
+  migrations: [`./db/migrations/*{.ts,.js}`],
 };
 
 const dataSource = new DataSource(dataSourceOption);

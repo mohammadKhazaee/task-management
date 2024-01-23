@@ -5,11 +5,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from './entities/user.entity';
-import { CreateAccountDto } from './dto/create-account.dto';
+import { User } from '../entities/user.entity';
+import { CreateAccountDto } from '../dto/create-account.dto';
 import * as bcrypt from 'bcrypt';
-import { UserRole } from './user-role.enum';
+import { UserRole } from '../enums/user-role.enum';
 import { UserQueryDto } from 'src/admin/dto/user-query.dto';
+import { Role } from '../entities/role.entity';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -50,9 +51,12 @@ export class UserRepository extends Repository<User> {
       const user = this.create({
         username,
         password: hashedPass,
-        role: isAdmin === 'true' ? UserRole.ADMIN : UserRole.USER,
       });
+      const role = new Role();
+      role.name = isAdmin === 'true' ? UserRole.ADMIN : UserRole.USER;
+      user.roles = [role];
       user.imageUrl = image ? image.originalname : user.imageUrl;
+
       await this.save(user);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY')
@@ -65,5 +69,26 @@ export class UserRepository extends Repository<User> {
     const user = await this.findOneBy({ id });
     if (!user) throw new NotFoundException();
     return user;
+  }
+
+  async createAdmin(): Promise<{ returnAdmin: User; code: number }> {
+    const existingAdmin = await this.createQueryBuilder('user')
+      .innerJoinAndSelect('user.roles', 'role')
+      .where('role.name = :name', { name: UserRole.ADMIN })
+      .getOne();
+
+    let code = 0,
+      returnAdmin = existingAdmin;
+    if (!existingAdmin) {
+      const admin = new User();
+      const hashedPass = await bcrypt.hash('admin', 12);
+      admin.username = 'Admin';
+      admin.password = hashedPass;
+
+      returnAdmin = await this.save(admin);
+      if (!returnAdmin) code = 2;
+      else code = 1;
+    }
+    return { returnAdmin, code };
   }
 }

@@ -16,7 +16,7 @@ export class Task {
   id: string;
 
   @Column()
-  title: string;
+  name: string;
 
   @Column()
   priority: TaskPriority;
@@ -34,7 +34,7 @@ export class Task {
   updatedDate: Date;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @ManyToOne((_type) => User, (user) => user.tasks, { eager: false })
+  @ManyToOne(() => User, (user) => user.tasks, { eager: false })
   @Exclude({ toPlainOnly: true })
   user: User;
 }

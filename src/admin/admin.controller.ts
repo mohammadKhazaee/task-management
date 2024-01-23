@@ -20,21 +20,25 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserQueryDto } from './dto/user-query.dto';
 import { CreateAccountDto } from 'src/auth/dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { IsAdminGuard } from 'src/auth/isAdmin.gaurd';
+import { PermissionGuard } from 'src/auth/gaurds/permission.gaurd';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { permissionType as permissionEnum } from 'src/auth/enums/permission-type.enum';
+import { Permission } from 'src/auth/decorators/permission.decorator';
 
-@UseGuards(IsAdminGuard)
+@UseGuards(PermissionGuard)
 @UseGuards(AuthGuard())
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get('/tasks')
+  @Permission([permissionEnum.ACCESS_TASKS])
   getTasks(@Query() taskQueryDto: TaskQueryDto): Promise<Task[]> {
     return this.adminService.getTasks(taskQueryDto);
   }
 
   @Get('/users')
+  @Permission([permissionEnum.READ_USERS])
   getUsers(
     @Query() userQueryDto: UserQueryDto,
     @getUser() admin: User,
@@ -43,6 +47,7 @@ export class AdminController {
   }
 
   @Post('/user')
+  @Permission([permissionEnum.ADD_USER])
   @UseInterceptors(FileInterceptor('image'))
   createUser(
     @Body() createUserDto: CreateAccountDto,
@@ -53,6 +58,7 @@ export class AdminController {
   }
 
   @Patch('/user/:id')
+  @Permission([permissionEnum.EDIT_USER])
   @UseInterceptors(FileInterceptor('image'))
   updateUser(
     @Param('id') id: string,
@@ -64,6 +70,7 @@ export class AdminController {
   }
 
   @Delete('/user/:id')
+  @Permission([permissionEnum.DELETE_USER])
   deleteUser(@Param('id') id: string): Promise<void> {
     return this.adminService.deleteUser(id);
   }

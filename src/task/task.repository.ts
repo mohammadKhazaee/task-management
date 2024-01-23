@@ -4,7 +4,7 @@ import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { TaskQueryDto } from './dto/task-query.dto';
-import { UserRole } from 'src/auth/user-role.enum';
+import { UserRole } from 'src/auth/enums/user-role.enum';
 
 @Injectable()
 export class TaskRepository extends Repository<Task> {
@@ -17,7 +17,7 @@ export class TaskRepository extends Repository<Task> {
       TASK_PER_PAGE = 4;
 
     const query = this.createQueryBuilder('task');
-    if (user && user.role === UserRole.USER)
+    if (user && !!user.roles.find((r) => r.name === UserRole.USER))
       query.where('userId = :user', { user: user.id });
 
     if (search)

@@ -16,7 +16,7 @@ export class CreateAccountDto {
   @IsString()
   @MaxLength(32)
   @IsStrongPassword({
-    minLength: 8,
+    minLength: 5,
     minLowercase: 0,
     minNumbers: 0,
     minSymbols: 0,

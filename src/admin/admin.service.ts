@@ -8,9 +8,10 @@ import { Task } from 'src/task/entities/task.entity';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { TaskRepository } from 'src/task/task.repository';
-import { UserRepository } from 'src/auth/user.repository';
-import { UserRole } from 'src/auth/user-role.enum';
+import { UserRepository } from 'src/auth/repositories/user.repository';
+import { UserRole } from 'src/auth/enums/user-role.enum';
 import { FileHelper } from 'src/utils/file.helper';
+import { Role } from 'src/auth/entities/role.entity';
 
 @Injectable()
 export class AdminService {
@@ -54,7 +55,11 @@ export class AdminService {
       const hashedPass = await bcrypt.hash(password, 12);
       user.password = hashedPass;
     }
-    user.role = isAdmin ? UserRole.ADMIN : user.role;
+    if (isAdmin) {
+      const role = new Role();
+      role.name = UserRole.ADMIN;
+      user.roles.push(role);
+    }
     user.imageUrl = image ? image.originalname : user.imageUrl;
 
     await this.userRepository.save(user);

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { join } from 'path';
-import { UserRepository } from './auth/user.repository';
+import { UserRepository } from './auth/repositories/user.repository';
 import { FileHelper } from './utils/file.helper';
 import { Observable, of } from 'rxjs';
 

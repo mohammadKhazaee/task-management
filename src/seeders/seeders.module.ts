@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Seeder } from './seeder';
+import { AuthModule } from '../auth/auth.module';
+import { TaskModule } from 'src/task/task.module';
 
 @Module({
   imports: [
@@ -13,6 +16,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: false,
       autoLoadEntities: true,
     }),
+    AuthModule,
+    TaskModule,
   ],
+  providers: [Seeder],
 })
-export class DatabaseModule {}
+export class SeederModule {}
